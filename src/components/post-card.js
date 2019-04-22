@@ -7,7 +7,10 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import withRoot from "../../withRoot";
+import withRoot from "../withRoot";
+
+import PostPage from "../routes/post-page";
+import { Link } from "react-router-dom";
 
 const styles = theme => ({
   card: {
@@ -23,10 +26,13 @@ const styles = theme => ({
   }
 });
 
-export class Post extends Component {
+export class PostCard extends Component {
   render() {
     const { post, classes, viewPost, editPost } = this.props;
     const { userId, id, title, body } = post;
+
+    const MyLink = props => <Link to={`/posts/${id}`} {...props} />;
+
     return (
       <Grid item sm={6} md={4} lg={3} style={{ margin: "20px" }}>
         <Card className={classes.card}>
@@ -42,11 +48,8 @@ export class Post extends Component {
             <Typography>{body}</Typography>
           </CardContent>
           <CardActions>
-            <Button size="small" color="primary" onClick={viewPost}>
+            <Button size="small" color="primary" component={MyLink}>
               View
-            </Button>
-            <Button size="small" color="primary" onClick={editPost}>
-              Edit
             </Button>
           </CardActions>
         </Card>
@@ -55,4 +58,4 @@ export class Post extends Component {
   }
 }
 
-export default withRoot(withStyles(styles)(Post));
+export default withRoot(withStyles(styles)(PostCard));
