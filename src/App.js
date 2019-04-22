@@ -51,8 +51,6 @@ class App extends Component {
   render() {
     const { posts, classes } = this.props;
 
-    console.log(this.props);
-
     return (
       <>
         <DenseAppBar {...this.props} />
