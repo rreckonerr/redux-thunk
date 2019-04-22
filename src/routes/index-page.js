@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { downloadPosts } from "../redux/reducer";
+import { downloadPosts } from "../ducks/posts";
 
 import PostCard from "../components/post-card";
 
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import withRoot from "../withRoot";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = theme => ({
   postsTitle: {
@@ -32,12 +32,19 @@ const styles = theme => ({
   },
   cardGrid: {
     padding: `${theme.spacing.unit * 8}px 0`
+  },
+  progress: {
+    margin: theme.spacing.unit * 2
   }
 });
 
 class IndexPage extends Component {
+  componentDidMount() {
+    this.props.downloadPosts();
+  }
+
   render() {
-    const { posts, classes } = this.props;
+    const { posts, classes, loading } = this.props;
 
     return (
       <>
@@ -53,23 +60,23 @@ class IndexPage extends Component {
               >
                 Posts
               </Typography>
-
-              <h2>Click download button</h2>
-
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.props.downloadPosts}
-              >
-                Download
-              </Button>
             </div>
           </div>
           <div className={classNames(classes.layout, classes.cardGrid)}>
-            <Grid container spacing={40}>
-              {posts &&
-                posts.map(post => <PostCard key={post.id} post={post} />)}
-            </Grid>
+            {loading ? (
+              <div style={{ margin: `0 auto` }}>
+                <CircularProgress
+                  className={classes.progress}
+                  size={100}
+                  thickness={10}
+                />
+              </div>
+            ) : (
+              <Grid container spacing={40}>
+                {posts &&
+                  posts.map(post => <PostCard key={post.id} post={post} />)}
+              </Grid>
+            )}
           </div>
         </main>
       </>
@@ -78,7 +85,7 @@ class IndexPage extends Component {
 }
 
 export default connect(
-  state => ({ posts: state.posts }),
+  state => ({ posts: state.posts, loading: state.loading }),
   dispatch => ({
     downloadPosts: () => dispatch(downloadPosts())
   })
